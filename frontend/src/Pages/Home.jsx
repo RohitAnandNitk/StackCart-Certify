@@ -92,6 +92,7 @@ function Home() {
 
           </div>
         ) : (
+          //No record found section
           <div className="flex flex-col items-center justify-center min-h-screen gap-5">
             <h2 className="text-3xl font-semibold mb-6 text-red-600">No Record Found</h2>
             <p className="text-slate-900 text-3xl">Please check the Certificate ID and try again.</p>
