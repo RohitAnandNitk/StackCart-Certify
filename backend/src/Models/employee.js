@@ -2,46 +2,46 @@ import mongoose from 'mongoose' ;
 
 const employeeSchema = mongoose.Schema({
     certificateId : {
-        type: string ,
+        type: String ,
         require : true ,
+        unique : true , 
     }, 
     employeeId : {
-        type: string ,
-        require : true ,
+        type: String ,
+        required : true ,
+        unique : true , 
     }, 
    fullName : {
-       type : string , 
+       type : String , 
        require : true , 
     },
     email : {
-        type : string , 
-        require : true , 
+        type : String , 
+        required : true ,  
     } , 
     issueDate : {
          type : Date , 
          default : Date.now ,
-
     } , 
     endDate : {
          type : Date , 
-         require : true , 
-
+         required : true , 
     } , 
     startDate : {
         type : Date , 
-        require : true , 
+        required : true , 
     } , 
     issueBy : {
-        type : string ,  
+        type : String ,  
         default : "Anshu Raj" , 
     } , 
     program : {
-        type : string , 
-        require : true , 
+        type : String , 
+        required : true , 
     } , 
 
 } , {timestamps : true }) ; 
 
-const Employee = mongoose.Schema("Employee" , employeeSchema) ; 
+const Employee = mongoose.model("Employee" , employeeSchema) ; 
 
-export default Employee ; ;
+export default Employee ; 
