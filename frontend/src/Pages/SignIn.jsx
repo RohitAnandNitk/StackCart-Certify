@@ -1,13 +1,17 @@
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import React from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from '../store/useAuthStore';
+import { useAuthStore } from "../store/useAuthStore";
 
 function CreateId() {
   // import for navigate
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const { login, loading } = useAuthStore();
   const onSubmit = (data) => {
@@ -20,25 +24,18 @@ function CreateId() {
       navigate("/home");
     } catch (error) {
       console.error("Login error:", error);
-
     }
-
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-transparent pt-48">
       <div className="bg-transparent shadow-xl rounded-xl p-10 w-full max-w-2xl">
         <h2 className="text-2xl text-slate-900 font-semibold mb-6 text-center">
-  return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-transparent pt-48'>
-      <div className='bg-transparent shadow-xl rounded-xl p-10 w-full max-w-2xl'>
-        <h2 className='text-2xl text-slate-900 font-semibold mb-6 text-center'>
           Note: All fields are mandatory
         </h2>
 
-        <form className='flex flex-col gap-6' onSubmit={handleSubmit(onSubmit)}>
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
           {/* Name */}
-
 
           {/* email */}
           <div className="flex flex-col gap-2">
@@ -59,17 +56,11 @@ function CreateId() {
           {/* StartDate */}
           <div className="flex flex-col gap-2">
             <label className="text-lg font-medium">Password</label>
-          {/* StartDate */}
-          <div className='flex flex-col gap-2'>
-            <label className='text-lg font-medium'>Password</label>
             <input
               type="password"
               {...register("Password", { min: 6, required: true })}
               placeholder="Enter Password"
               className="border border-gray-300 rounded-lg px-4 py-2 text-lg w-full hover:border-green-700 hover:shadow-md hover:shadow-green-200 transition duration-200"
-              {...register("Password", { min: 6, required: true })}
-              placeholder='Enter Password'
-              className='border border-gray-300 rounded-lg px-4 py-2 text-lg w-full hover:border-green-700 hover:shadow-md hover:shadow-green-200 transition duration-200'
             />
             {errors.Password && (
               <span className="text-red-500 text-sm">
@@ -78,20 +69,18 @@ function CreateId() {
             )}
           </div>
 
-
-
           {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className={`bg-green-700 hover:bg-green-800 text-white text-lg font-semibold py-2 px-4 rounded-lg mt-4 transition duration-200 ${loading && 'opacity-50 cursor-not-allowed'}`}
+            className={`bg-green-700 hover:bg-green-800 text-white text-lg font-semibold py-2 px-4 rounded-lg mt-4 transition duration-200 ${
+              loading && "opacity-50 cursor-not-allowed"
+            }`}
           >
             {loading ? "Signing in..." : "Log In"}
           </button>
-
         </form>
       </div>
-
     </div>
   );
 }

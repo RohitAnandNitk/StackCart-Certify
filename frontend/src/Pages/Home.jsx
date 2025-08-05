@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
-import Button from '../components/Button';
-import { useCertificateStore } from '../store/useCertificateIdStore';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import Button from "../components/Button";
+import { useCertificateStore } from "../store/useCertificateIdStore";
+import toast from "react-hot-toast";
+import companyLogo from "../assets/company-logo.png"; // <-- import your logo
 
 function Home() {
-  const { getInfo, certificateInformation, loading, setCertificateInformation } = useCertificateStore();
+  const {
+    getInfo,
+    certificateInformation,
+    loading,
+    setCertificateInformation,
+  } = useCertificateStore();
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isValidateButtonClicked, setIsValidateButtonClicked] = useState(false);
 
-  // Function to handle the validation logic
   const handleValidate = () => {
-    // Check if the input value is empty before proceeding
     if (!inputValue.trim()) {
       toast.error("Please enter a Certificate ID.");
-      // Do not set isValidateButtonClicked to true, stay on the form view
       return;
     }
-
-    // If there is an input value, set the state and call the API
     setIsValidateButtonClicked(true);
     getInfo({ certificateId: inputValue });
   };
@@ -26,7 +27,7 @@ function Home() {
   const handleGoBack = () => {
     setIsValidateButtonClicked(false);
     setCertificateInformation(null);
-    setInputValue(''); // Also reset the input field
+    setInputValue("");
   };
 
   return (
@@ -38,8 +39,8 @@ function Home() {
 
       {/* Main Content */}
       {!isValidateButtonClicked ? (
-        <div className='flex flex-col items-center justify-center h-screen'>
-          <div className='flex flex-col gap-7 justify-center items-center'>
+        <div className="flex flex-col items-center justify-center h-screen">
+          <div className="flex flex-col gap-7 justify-center items-center">
             <h1 className="text-4xl font-bold text-center">
               <span className="text-green-500">&lt;</span>
               Validate
@@ -47,8 +48,10 @@ function Home() {
             </h1>
 
             {/* Form */}
-            <div className='flex flex-col items-center justify-center mt-10 gap-4'>
-              <label className='text-2xl font-semibold' htmlFor="certificateId">Certificate ID</label>
+            <div className="flex flex-col items-center justify-center mt-10 gap-4">
+              <label className="text-2xl font-semibold" htmlFor="certificateId">
+                Certificate ID
+              </label>
               <div className="w-full max-w-sm min-w-[200px]">
                 <input
                   value={inputValue}
@@ -59,20 +62,30 @@ function Home() {
               </div>
             </div>
 
-            <Button
-              onClick={handleValidate}
-              name="Validate"
-            />
+            <Button onClick={handleValidate} name="Validate" />
           </div>
         </div>
       ) : certificateInformation ? (
-        <div className="flex flex-col gap-3 items-center justify-center min-h-screen px-4 py-8">
-          <h2 className="text-3xl font-semibold mb-6">Certificate Information</h2>
+        <div className="flex flex-col gap-3 items-center justify-center min-h-screen px-4 py-8 mt-20">
+          {/* Company Logo */}
+          <div className="w-full max-w-4xl flex items-center justify-center mb-4">
+            <img
+              src={companyLogo}
+              alt="Company Logo"
+              className="h-20 w-20 object-cover rounded-full shadow-md"
+            />
+          </div>
+
+          <h2 className="text-3xl font-semibold mb-6">
+            Certificate Information
+          </h2>
           <div className="bg-transparent shadow-xl rounded-xl p-8 w-full max-w-4xl">
             <div className="space-y-6 text-lg">
               <div className="flex justify-around font-semibold">
                 <span>Certificate ID:</span>
-                <span className="font-normal">{certificateInformation.certificateId}</span>
+                <span className="font-normal">
+                  {certificateInformation.certificateId}
+                </span>
               </div>
               <div className="flex justify-around">
                 <span className="font-semibold">Name:</span>
@@ -81,10 +94,12 @@ function Home() {
               <div className="flex justify-around">
                 <span className="font-semibold">Issue Date:</span>
                 <span>
-                  {new Date(certificateInformation.issueDate).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
+                  {new Date(
+                    certificateInformation.issueDate
+                  ).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
                   })}
                 </span>
               </div>
@@ -99,21 +114,26 @@ function Home() {
               <div className="flex justify-around">
                 <span className="font-semibold">Program Start Date:</span>
                 <span>
-                  {new Date(certificateInformation.startDate).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
+                  {new Date(
+                    certificateInformation.startDate
+                  ).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
                   })}
                 </span>
               </div>
               <div className="flex justify-around">
                 <span className="font-semibold">Program End Date:</span>
                 <span>
-                  {new Date(certificateInformation.endDate).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+                  {new Date(certificateInformation.endDate).toLocaleDateString(
+                    "en-US",
+                    {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )}
                 </span>
               </div>
             </div>
@@ -123,8 +143,12 @@ function Home() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center min-h-screen gap-5">
-          <h2 className="text-3xl font-semibold mb-6 text-red-600">No Record Found</h2>
-          <p className="text-slate-900 text-3xl">Please check the Certificate ID and try again.</p>
+          <h2 className="text-3xl font-semibold mb-6 text-red-600">
+            No Record Found
+          </h2>
+          <p className="text-slate-900 text-3xl">
+            Please check the Certificate ID and try again.
+          </p>
           <Button onClick={handleGoBack} name="Go Back" />
         </div>
       )}
