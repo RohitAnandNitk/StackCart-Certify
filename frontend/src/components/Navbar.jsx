@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, UserCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import SignIn from '../Pages/SignIn';
-import SignUp from '../Pages/SignUp';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { admin, loading, logout } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
-  const [showAdminOption, setShowAdminOption] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [showAdminOption, setShowAdminOption] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -49,7 +50,7 @@ const Navbar = () => {
         {/* Center Links */}
         <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-6 text-gray-700 font-medium">
           <li><NavLink to="/home" className="hover:text-green-600">Home</NavLink></li>
-          {isAdmin && <li><NavLink to="/createId" className="hover:text-green-600">Create Id</NavLink></li>}
+          {admin && <li><NavLink to="/createId" className="hover:text-green-600">Create Id</NavLink></li>}
           <li><NavLink to="/about" className="hover:text-green-600">About Us</NavLink></li>
         </ul>
 
@@ -61,21 +62,26 @@ const Navbar = () => {
 
           {showAdminOption && (
             <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-40 bg-green-100 shadow-lg rounded-lg py-2 z-50">
-
-              {isAdmin ? (
+              {!admin ? (
                 <>
-                  <NavLink onClick={()=> {
+                  <NavLink onClick={() => {
                     setShowAdminOption(false)
                   }} to="/SignIn" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign In</NavLink>
-                  <NavLink onClick={()=> {
+                  <NavLink onClick={() => {
                     setShowAdminOption(false)
                   }} to="SignUp" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign Up</NavLink>
-                  
                 </>
               ) : (
-                <button onClick={()=> {
-                    setShowAdminOption(false)
+                <div>
+                  <div className='block w-full px-4 py-2 text-left'>
+                    {`${admin.fullName}`}
+                  </div>
+                  <button onClick={() => {
+                    setShowAdminOption(false);
+                    logout();
+                    navigate("/home");
                   }} className="block w-full px-4 py-2 text-left hover:bg-green-50">Logout</button>
+                </div>
               )}
             </div>
           )}
@@ -89,13 +95,34 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <ul className="md:hidden mt-4 w-full bg-transparent shadow-md flex flex-col items-center gap-4 py-4 z-50">
+        <ul className="md:hidden mt-4 w-full bg-green-100 shadow-md flex flex-col items-center gap-4 py-4 z-50">
           <li><NavLink to="/home" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600">Home</NavLink></li>
-          {isAdmin && <li><NavLink to="/createId" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600">Create Id</NavLink></li>}
+          {admin && <li><NavLink to="/createId" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600">Create Id</NavLink></li>}
           <li><NavLink to="/about" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600">About Us</NavLink></li>
-          <li><NavLink to="/admin" onClick={toggleMenu} className="text-gray-700 hover:text-blue-600 flex items-center gap-1">
-            <UserCircle size={20} /> Admin
-          </NavLink></li>
+
+          {/* Conditional rendering for Login/Logout/Signup on mobile */}
+          {!admin ? (
+            <>
+              <li><NavLink onClick={toggleMenu} to="/SignIn" className="text-gray-700 hover:text-blue-600">Sign In</NavLink></li>
+              <li><NavLink onClick={toggleMenu} to="/SignUp" className="text-gray-700 hover:text-blue-600">Sign Up</NavLink></li>
+            </>
+          ) : (
+            <>
+              <li><div className="text-gray-700 font-bold px-4 py-2">{`Hello, ${admin.fullName}`}</div></li>
+              <li>
+                <button
+                  onClick={() => {
+                    toggleMenu();
+                    logout();
+                    navigate("/home");
+                  }}
+                  className="text-gray-700 hover:text-blue-600"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
+          )}
         </ul>
       )}
     </nav>
