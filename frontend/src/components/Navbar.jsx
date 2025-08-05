@@ -16,6 +16,13 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  // Close menus when auth state changes (login/logout)
+  useEffect(() => {
+    // This will run when 'admin' changes, closing any open menus
+    setIsOpen(false);
+    setShowAdminOption(false);
+  }, [admin]);
+
   // Hide navbar on scroll down
   useEffect(() => {
     const handleScroll = () => {
@@ -64,12 +71,8 @@ const Navbar = () => {
             <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-40 bg-green-100 shadow-lg rounded-lg py-2 z-50">
               {!admin ? (
                 <>
-                  <NavLink onClick={() => {
-                    setShowAdminOption(false)
-                  }} to="/SignIn" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign In</NavLink>
-                  <NavLink onClick={() => {
-                    setShowAdminOption(false)
-                  }} to="SignUp" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign Up</NavLink>
+                  <NavLink onClick={() => setShowAdminOption(false)} to="/SignIn" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign In</NavLink>
+                  <NavLink onClick={() => setShowAdminOption(false)} to="SignUp" className="block w-full px-4 py-2 text-left hover:bg-green-50">Sign Up</NavLink>
                 </>
               ) : (
                 <div>
@@ -77,7 +80,6 @@ const Navbar = () => {
                     {`${admin.fullName}`}
                   </div>
                   <button onClick={() => {
-                    setShowAdminOption(false);
                     logout();
                     navigate("/home");
                   }} className="block w-full px-4 py-2 text-left hover:bg-green-50">Logout</button>
@@ -112,7 +114,6 @@ const Navbar = () => {
               <li>
                 <button
                   onClick={() => {
-                    toggleMenu();
                     logout();
                     navigate("/home");
                   }}
