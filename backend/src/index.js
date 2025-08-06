@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 8001;
 app.use(express.json());
 // use cookieparser
 app.use(cookieParser());
+app.set("trust proxy", 1);
 
 // allow cors
 
