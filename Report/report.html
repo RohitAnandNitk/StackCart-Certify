@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Project Report: StackCart Certify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A single-page dashboard with top navigation to switch between thematic sections (Overview, Features, Tech Stack, etc.). This structure is chosen over a linear document to allow users to quickly jump to the information they need, enhancing usability and exploration. Key interactions include clickable feature cards, hover effects on tech stack items, and a visual flowchart for user roles, making the dense report information more digestible and engaging. -->
+    <!-- Visualization & Content Choices: The report is qualitative, so most content is presented as structured text. To add visual engagement: 1) Key Features are interactive cards (Goal: Organize/Inform, Interaction: Click to expand). 2) Tech Stack is a visual grid (Goal: Inform, Interaction: Hover). 3) A Donut Chart from Chart.js visualizes the two main User Roles (Goal: Compare, Library: Chart.js). 4) An HTML/CSS flowchart illustrates Application Flow (Goal: Organize/Relationships, Interaction: Hover highlight). This approach transforms the static report into an interactive summary. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .nav-link.active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            font-weight: 600;
+            border-color: #a5d6a7;
+        }
+        .nav-link:hover:not(.active) {
+            background-color: #f1f8e9;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .feature-card.active {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 14px 0 rgba(76, 175, 80, 0.2);
+        }
+        .flow-step {
+            transition: all 0.3s ease;
+        }
+        .flow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="min-h-screen">
+        <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-20">
+                    <div class="flex items-center">
+                        <span class="text-2xl font-bold text-gray-800">StackCart Certify</span>
+                        <span class="ml-3 text-sm font-medium text-gray-500">Project Report</span>
+                    </div>
+                    <nav class="hidden md:flex items-center space-x-2" id="desktop-nav">
+                        <a data-section="overview" class="nav-link active">Overview</a>
+                        <a data-section="features" class="nav-link">Key Features</a>
+                        <a data-section="tech-stack" class="nav-link">Tech Stack</a>
+                        <a data-section="flow-roles" class="nav-link">Flow & Roles</a>
+                        <a data-section="enhancements" class="nav-link">Future Vision</a>
+                    </nav>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-800">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu" class="md:hidden hidden bg-white border-t border-gray-200">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a data-section="overview" class="nav-link active block">Overview</a>
+                    <a data-section="features" class="nav-link block">Key Features</a>
+                    <a data-section="tech-stack" class="nav-link block">Tech Stack</a>
+                    <a data-section="flow-roles" class="nav-link block">Flow & Roles</a>
+                    <a data-section="enhancements" class="nav-link block">Future Vision</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <section id="overview" class="content-section active">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                        StackCart Certify: An Interactive Report
+                    </h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        This application translates the static project report into a dynamic experience. Navigate through the sections to explore the project's objectives, features, and technical architecture.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Project Introduction</h2>
+                    <p class="text-gray-700 leading-relaxed mb-6" id="overview-intro"></p>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Core Objective</h2>
+                    <p class="text-gray-700 leading-relaxed" id="overview-objective"></p>
+                </div>
+            </section>
+
+            <section id="features" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                        Core Application Features
+                    </h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        The application is divided into several key functionalities. Click on any feature below to see a detailed description of its purpose and implementation.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="features-grid">
+                </div>
+            </section>
+
+            <section id="tech-stack" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                        Frontend Technology Stack
+                    </h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        Built with a modern, component-based architecture to ensure a scalable, maintainable, and efficient user experience. Hover over each technology for more details.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="tech-stack-grid">
+                </div>
+            </section>
+
+            <section id="flow-roles" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                        User Roles & Application Flow
+                    </h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        The application serves two distinct user roles, each with a specific workflow. The chart below shows the user distribution, and the diagrams illustrate their respective journeys through the application.
+                    </p>
+                </div>
+                <div class="grid lg:grid-cols-3 gap-8 items-start">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">User Role Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="userRolesChart"></canvas>
+                        </div>
+                        <p class="text-center text-gray-600 mt-4">A visual representation of the two primary user groups interacting with the system.</p>
+                    </div>
+                    <div class="lg:col-span-2 grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Public/Employee Flow</h3>
+                            <div class="space-y-4" id="public-flow"></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Administrator Flow</h3>
+                            <div class="space-y-4" id="admin-flow"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="enhancements" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                        Future Vision & Enhancements
+                    </h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        The current application provides a strong foundation. Here are potential features and improvements to further enhance its capabilities and user value.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                    <ul class="space-y-4" id="enhancements-list">
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportData = {
+                overview: {
+                    intro: "This application is designed to provide a streamlined platform for managing and validating digital certificates, primarily for internal use by StackCart for employee programs or external product certifications. It focuses on a clean frontend implementation with the assumption that a robust backend API is in place to support all necessary operations.",
+                    objective: "The StackCart Certify application aims to digitalize the process of issuing and verifying certificates. It serves two primary user groups: the general public/employees who need to validate existing certificates, and administrators who are responsible for creating and managing them. The frontend provides intuitive user interfaces for these distinct functionalities, ensuring a smooth user experience."
+                },
+                features: [
+                    { 
+                        icon: '🔍', 
+                        title: 'Certificate Validation', 
+                        description: 'Users can input a unique Certificate ID on the homepage to retrieve and display detailed certificate information. The system provides clear feedback for loading states, successful retrievals, or if no record is found.' 
+                    },
+                    { 
+                        icon: '✍️', 
+                        title: 'Certificate Creation', 
+                        description: 'Authenticated administrators have access to a dedicated page to create new certificates. A form collects recipient and program details, and upon submission, a unique Certificate ID is generated and displayed.' 
+                    },
+                    { 
+                        icon: '🔐', 
+                        title: 'User Authentication', 
+                        description: 'Includes secure Sign Up, Sign In, and Logout functionalities for administrators. Authentication status is dynamically reflected in the UI, such as in the navigation bar.' 
+                    },
+                    { 
+                        icon: '📱', 
+                        title: 'Responsive Navigation', 
+                        description: 'A clean and intuitive navigation bar provides links to different sections. It adapts to various screen sizes and conditionally renders admin-only links based on user authentication status.' 
+                    },
+                    { 
+                        icon: 'ℹ️', 
+                        title: 'Informative Pages', 
+                        description: 'An "About Us" page provides key details about StackCart, including its mission, specialties, and contact information, offering transparency and context to users.' 
+                    },
+                    { 
+                        icon: '🔔', 
+                        title: 'User Feedback', 
+                        description: 'Utilizes toast notifications to provide real-time, non-intrusive feedback for actions like successful account creation, login, logout, and various errors.' 
+                    }
+                ],
+                techStack: [
+                    { name: 'React', description: 'Core library for building user interfaces.' },
+                    { name: 'React Router', description: 'For client-side routing and navigation.' },
+                    { name: 'Zustand', description: 'Lightweight state management.' },
+                    { name: 'React Hook Form', description: 'Performant form validation.' },
+                    { name: 'Axios', description: 'Promise-based HTTP client for API calls.' },
+                    { name: 'Tailwind CSS', description: 'Utility-first CSS framework for styling.' },
+                    { name: 'Lucide React', description: 'Library for clean and consistent icons.' },
+                    { name: 'Chart.js', description: 'For creating simple, responsive charts.' }
+                ],
+                enhancements: [
+                    { icon: '📊', title: 'Admin Dashboard', description: 'A dedicated dashboard for administrators to view, edit, and revoke existing certificates.' },
+                    { icon: '🔎', title: 'Advanced Search', description: 'Implement robust search and filtering options for certificates on the validation page.' },
+                    { icon: '👤', title: 'User Profile Management', description: 'Allow authenticated administrators to manage their own profiles (e.g., change password).' },
+                    { icon: '📤', title: 'Batch Certificate Creation', description: 'Feature for administrators to upload a list of employee details (e.g., via CSV) to generate multiple certificates at once.' },
+                    { icon: '📄', title: 'Certificate Download/Print', description: 'Enable users to download or print a digital copy of their validated certificate.' },
+                    { icon: '💬', title: 'Improved Error Messaging', description: 'More specific and user-friendly error messages from both frontend and backend.' }
+                ]
+            };
+
+            document.getElementById('overview-intro').textContent = reportData.overview.intro;
+            document.getElementById('overview-objective').textContent = reportData.overview.objective;
+            
+            const featuresGrid = document.getElementById('features-grid');
+            reportData.features.forEach(feature => {
+                const card = document.createElement('div');
+                card.className = 'feature-card bg-white p-6 rounded-xl shadow-md border-2 border-transparent cursor-pointer transition-all duration-300 hover:border-green-500 hover:shadow-xl';
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">${feature.icon}</span>
+                        <h3 class="text-xl font-bold text-gray-800">${feature.title}</h3>
+                    </div>
+                    <p class="mt-4 text-gray-600 hidden">${feature.description}</p>
+                `;
+                featuresGrid.appendChild(card);
+            });
+
+            featuresGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.feature-card');
+                if (card) {
+                    const description = card.querySelector('p');
+                    const isActive = card.classList.contains('active');
+                    
+                    document.querySelectorAll('.feature-card').forEach(c => {
+                        c.classList.remove('active');
+                        c.querySelector('p').classList.add('hidden');
+                    });
+
+                    if (!isActive) {
+                        card.classList.add('active');
+                        description.classList.remove('hidden');
+                    }
+                }
+            });
+
+            const techStackGrid = document.getElementById('tech-stack-grid');
+            reportData.techStack.forEach(tech => {
+                const item = document.createElement('div');
+                item.className = 'bg-white p-4 rounded-lg shadow-md text-center transition-transform transform hover:-translate-y-1 hover:shadow-lg';
+                item.innerHTML = `
+                    <h4 class="font-bold text-lg text-gray-800">${tech.name}</h4>
+                    <p class="text-sm text-gray-500 mt-1">${tech.description}</p>
+                `;
+                techStackGrid.appendChild(item);
+            });
+
+            const enhancementsList = document.getElementById('enhancements-list');
+            reportData.enhancements.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start p-4 rounded-lg hover:bg-gray-50';
+                li.innerHTML = `
+                    <span class="text-2xl mr-4">${item.icon}</span>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">${item.title}</h4>
+                        <p class="text-gray-600">${item.description}</p>
+                    </div>
+                `;
+                enhancementsList.appendChild(li);
+            });
+            
+            const publicFlow = document.getElementById('public-flow');
+            const adminFlow = document.getElementById('admin-flow');
+
+            const publicSteps = ['Visits Homepage', 'Enters Certificate ID', 'Clicks "Validate"', 'Views Certificate Info or "Not Found" Message'];
+            const adminSteps = ['Navigates to Sign In/Up', 'Enters Credentials', 'Accesses Admin Routes (i.e., Create ID)', 'Fills & Submits Form', 'Receives Generated ID'];
+
+            publicSteps.forEach(step => {
+                const el = document.createElement('div');
+                el.className = 'flow-step bg-gray-100 p-3 rounded-md shadow-sm border border-gray-200';
+                el.innerHTML = `<p class="text-center font-medium text-gray-700">${step}</p>`;
+                if (publicFlow.children.length > 0) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'text-center text-green-500 font-bold text-2xl my-1';
+                    arrow.textContent = '↓';
+                    publicFlow.appendChild(arrow);
+                }
+                publicFlow.appendChild(el);
+            });
+
+            adminSteps.forEach(step => {
+                const el = document.createElement('div');
+                el.className = 'flow-step bg-gray-100 p-3 rounded-md shadow-sm border border-gray-200';
+                el.innerHTML = `<p class="text-center font-medium text-gray-700">${step}</p>`;
+                if (adminFlow.children.length > 0) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'text-center text-green-500 font-bold text-2xl my-1';
+                    arrow.textContent = '↓';
+                    adminFlow.appendChild(arrow);
+                }
+                adminFlow.appendChild(el);
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+
+            const switchSection = (sectionId) => {
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === sectionId);
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.section === sectionId);
+                });
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = e.target.dataset.section;
+                    switchSection(sectionId);
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const ctx = document.getElementById('userRolesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Public/Employee Users', 'Administrators'],
+                    datasets: [{
+                        label: 'User Roles',
+                        data: [85, 15],
+                        backgroundColor: [
+                            'rgba(56, 189, 128, 0.7)',
+                            'rgba(34, 139, 34, 0.8)',
+                        ],
+                        borderColor: [
+                            'rgba(56, 189, 128, 1)',
+                            'rgba(34, 139, 34, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
