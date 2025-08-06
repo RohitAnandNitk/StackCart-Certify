@@ -1,11 +1,19 @@
-import './App.css'
-import React from 'react'
-import AppRoute from './Routes/AppRoute'
-import { BrowserRouter } from 'react-router-dom'
+import './App.css';
+import React, { useEffect } from 'react';
+import AppRoute from './Routes/AppRoute';
+import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useAuthStore } from './store/useAuthStore';
 
 function App() {
+  // Get the checkAuth function and loading state from your Zustand store
+  const { checkAuth } = useAuthStore();
 
+  // This useEffect hook runs once when the component is first mounted
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+  
   return (
     <>
        <Toaster position="top-right" reverseOrder={false} />
@@ -14,10 +22,10 @@ function App() {
       </div>
 
       <BrowserRouter>
-        <AppRoute />
+        {<AppRoute />}
       </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
