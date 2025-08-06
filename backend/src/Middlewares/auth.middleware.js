@@ -1,37 +1,37 @@
-import jwt from  'jsonwebtoken'
-import Admin from '../Models/admin.js'
+import jwt from "jsonwebtoken";
+import Admin from "../Models/admin.js";
 
-const protectRoute = async (req , res , next) => {
-    try {
-        const token = req.cookies.jwt; 
-        if(!token) return res.status(404).json({
-            message : "Unathorized -No token provided"  , 
-        })
-            // jwt funtion return admin._id if token is valid
-        const decode = jwt.verify(token , process.env.JWT_SECRET) ; 
-
-        if(!decode) return res.status(404).json({
-            message : "Unauthorized : Invalid token" ,
-        })
-
-        // find admin 
-        const admin = await Admin.findOne({_id : decode.userId} , {password : 0}) ; 
-
-        if(!admin) return res.status(404).json({
-            message : "Unauthorized : No Admin found" ,
-        })
-
-        req.admin = admin ; 
-         next() ; 
+const protectRoute = async (req, res, next) => {
+  try {
+    const token = req.cookies?.jwt; // requires app.use(cookieParser())
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
     }
-      
-     catch(error) {
-       console.log("Error in protectRoute middleware" , error ) ; 
-       return res.status(500).json({
-        message : "Internal Server Errror "
-       })
-   }
-}
 
-export default protectRoute  ; 
-  
+    // Throws if invalid/expired
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+    // payload should contain { userId }
+    const admin = await Admin.findById(payload.userId).select("-password");
+    if (!admin) {
+      return res.status(401).json({ message: "Unauthorized: Admin not found" });
+    }
+
+    req.admin = admin;
+    return next();
+  } catch (err) {
+    // Handle common JWT errors explicitly
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Unauthorized: Token expired" });
+    }
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    }
+    console.error("Error in protectRoute middleware:", err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export default protectRoute;
