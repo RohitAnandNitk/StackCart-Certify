@@ -6,9 +6,8 @@ import { genrateToken } from "../lib/utils.js";
 const signup = async (req, res) => {
   // HardCode email here that are allowed to signup
   const hardCodeEmail = [
-    "imprincestark45@gmail.com",
-    "ramanandimo457@gmail.com",
-    "stackcartcertify@gmail.com",
+    "stackcarthiring@gmail.com",
+    "anandrohit64748@gmail.com",
   ];
   const { fullName, email, password } = req.body;
   try {

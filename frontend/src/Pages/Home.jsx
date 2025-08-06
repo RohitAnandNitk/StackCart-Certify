@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "../components/Button";
 import { useCertificateStore } from "../store/useCertificateIdStore";
 import toast from "react-hot-toast";
-import companyLogo from "../assets/company-logo.png"; // <-- import your logo
+import companyLogo from "../assets/company-logo.jpg"; // <-- import your logo
 
 function Home() {
   const {
