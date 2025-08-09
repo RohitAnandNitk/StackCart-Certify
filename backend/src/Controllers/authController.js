@@ -1,100 +1,82 @@
 import Admin from "../Models/admin.js";
 import bcrypt from "bcryptjs";
-import { genrateToken } from "../lib/utils.js";
+import { generateToken } from "../lib/utils.js";
 
 // SignUp controller
 const signup = async (req, res) => {
-  // HardCode email here that are allowed to signup
-  const hardCodeEmail = [
+  const allowedEmails = [
     "stackcarthiring@gmail.com",
     "anandrohit64748@gmail.com",
   ];
+
   const { fullName, email, password } = req.body;
+
   try {
     if (!fullName || !email || !password) {
-      return res.status(404).json({
-        message: "All field are required",
-      });
+      return res.status(400).json({ message: "All fields are required" });
     }
-    // check password lenght
+
     if (password.length < 6) {
-      return res.status(404).json({
-        message: "Password must contain atleast 6 character",
-      });
+      return res
+        .status(400)
+        .json({ message: "Password must contain at least 6 characters" });
     }
 
-    // check email is hardCoded or not
     const emailToSearch = email.trim().toLowerCase();
-    const isHardCoded = hardCodeEmail.some(
-      (emailId) => emailId === emailToSearch
-    );
-    if (!isHardCoded) {
-      return res.status(404).json({
-        message: "Cannot be SignUp with this email",
-      });
+    const isAllowed = allowedEmails.includes(emailToSearch);
+
+    if (!isAllowed) {
+      return res
+        .status(403)
+        .json({ message: "Signup is not allowed with this email" });
     }
 
-    // check email is exit or not
-    const isAdminExit = await Admin.findOne({ email });
-    if (isAdminExit)
-      return res.status(404).json({ message: "Email already exit" });
+    const existingAdmin = await Admin.findOne({ email: emailToSearch });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
 
-    // next step hash the password for saftey
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // create new admin and store in db
     const newAdmin = new Admin({
       fullName,
-      email,
+      email: emailToSearch,
       password: hashedPassword,
     });
 
-    if (newAdmin) {
-      // genrate  jwt token and this also save token in cookie
-      genrateToken(newAdmin._id, res);
-      // save newAdmin databse
-      await newAdmin.save();
+    await newAdmin.save();
 
-      return res.status(201).json({
-        _id: newAdmin._id,
-        email: newAdmin.email,
-        fullName: newAdmin.fullName,
-      });
-    } else {
-      return res.status(400).json({
-        message: "Invalid Admin data",
-      });
-    }
-  } catch (error) {
-    console.log(`Error in signup controller`, error);
-    return res.status(500).json({
-      message: "Internal Server Error",
+    // Generate JWT and set it as a cookie
+    generateToken(newAdmin._id, res, req);
+
+    return res.status(201).json({
+      _id: newAdmin._id,
+      email: newAdmin.email,
+      fullName: newAdmin.fullName,
     });
+  } catch (error) {
+    console.error("Error in signup controller:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// login controller
-
+// Login controller
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const admin = await Admin.findOne({ email });
-    if (!admin)
-      return res.status(404).json({
-        message: "Invalid Credientials",
-      });
+    const admin = await Admin.findOne({ email: email.trim().toLowerCase() });
+    if (!admin) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
 
-    // check for password
     const isPasswordCorrect = await bcrypt.compare(password, admin.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
 
-    if (!isPasswordCorrect)
-      return res.status(400).json({
-        message: "Invalid Credientials",
-      });
-
-    genrateToken(admin._id, res);
+    generateToken(admin._id, res, req);
 
     return res.status(200).json({
       _id: admin._id,
@@ -102,47 +84,39 @@ const login = async (req, res) => {
       email: admin.email,
     });
   } catch (error) {
-    console.log(`Eroor in login controller`, error);
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
+    console.error("Error in login controller:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// logout controller
-
+// Logout controller
 const logout = async (req, res) => {
   try {
-    // Check if we're in production (either NODE_ENV or deployed environment)
-    const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER_SERVICE_ID;
-    
-    res.cookie("jwt", "", { 
+    const isProduction =
+      process.env.NODE_ENV === "production" || process.env.RENDER_SERVICE_ID;
+
+    res.cookie("jwt", "", {
       maxAge: 0,
       httpOnly: true,
       sameSite: isProduction ? "none" : "lax",
       secure: isProduction,
-      path: "/"
+      path: "/",
     });
-    return res.status(200).json({
-      message: "Logout Successfully",
-    });
+
+    return res.status(200).json({ message: "Logout Successfully" });
   } catch (error) {
-    console.log("Error in logout controller", error);
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
+    console.error("Error in logout controller:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-// authCheck
-
+// Auth check controller
 const checkAuth = (req, res) => {
   try {
-    res.status(200).json(req.admin);
+    return res.status(200).json(req.admin);
   } catch (error) {
-    console.log("Error in checkAuth controller", error.message);
-
-    res.status(500).json({ message: "Internal Server error" });
+    console.error("Error in checkAuth controller:", error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

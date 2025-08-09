@@ -1,20 +1,19 @@
-import express from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-const genrateToken = (userId, res, req) => {
+dotenv.config();
+
+const generateToken = (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 
-  const origin = req.headers.origin || "";
-  const isSameOrigin = origin.includes("stackcart-certify.onrender.com");
-  const isCrossSite = !isSameOrigin;
+  const isProduction = process.env.NODE_ENV === "production";
 
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: true, // must be true for cross-site cookies
-    sameSite: "none", // must be none for cross-site cookies
+    secure: isProduction, // HTTPS in prod
+    sameSite: isProduction ? "none" : "lax", // none for cross-site, lax for local
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -22,4 +21,4 @@ const genrateToken = (userId, res, req) => {
   return token;
 };
 
-export { genrateToken };
+export { generateToken };
