@@ -113,11 +113,15 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
+    // Check if we're in production (either NODE_ENV or deployed environment)
+    const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER_SERVICE_ID;
+    
     res.cookie("jwt", "", { 
       maxAge: 0,
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction,
+      path: "/"
     });
     return res.status(200).json({
       message: "Logout Successfully",

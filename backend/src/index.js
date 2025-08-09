@@ -22,12 +22,13 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: [
-      "http://localhost:5174",
-      "http://localhost:5173",
-      "http://localhost:5001",
-      "https://stackcart-certify.vercel.app"
+      "http://localhost:5173", // local dev frontend
+      "https://stackcart-certify.vercel.app", // production frontend
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
