@@ -10,7 +10,16 @@ router.post("/login" , login);
 
 router.get("/logout" , logout) ; 
 
-router.get("/checkAuth" ,protectRoute ,  checkAuth) ; 
+router.get("/checkAuth" ,protectRoute ,  checkAuth) ;
+
+// Debug route to check cookies
+router.get("/debug", (req, res) => {
+  res.json({
+    cookies: req.cookies,
+    headers: req.headers,
+    hasJWT: !!req.cookies?.jwt
+  });
+}); 
 
 export default router; 
 

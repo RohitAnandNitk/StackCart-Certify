@@ -28,7 +28,9 @@ export const useAuthStore = create((set) => ({
             set({ admin: res.data });
             toast.success("Account created successfully");
         } catch (error) {
-            toast.error(error.response.data.message );
+            console.error("Signup error:", error);
+            const errorMessage = error.response?.data?.message || error.message || "Signup failed";
+            toast.error(errorMessage);
         } finally {
             set({ loading: false });
         }
@@ -39,10 +41,14 @@ export const useAuthStore = create((set) => ({
         set({ loading: true });
         try {
             const res = await axiosInstance.post("/auth/login", data);
+            console.log("Login successful, response:", res.data);
             set({ admin: res.data });
             toast.success("Login successfully");
         } catch (error) {
-            toast.error(error.response.data.message);
+            console.error("Login error:", error);
+            console.error("Error response:", error.response?.data);
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
+            toast.error(errorMessage);
         } finally {
             set({ loading: false });
         }
@@ -56,7 +62,9 @@ export const useAuthStore = create((set) => ({
             set({ admin: null });
             toast.success("Logout successfully");
         } catch (error) {
-            toast.error(error.response.data.message);
+            console.error("Logout error:", error);
+            const errorMessage = error.response?.data?.message || error.message || "Logout failed";
+            toast.error(errorMessage);
         } finally {
             set({ loading: false });
         }

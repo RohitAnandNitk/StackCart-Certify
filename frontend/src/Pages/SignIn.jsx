@@ -14,13 +14,13 @@ function CreateId() {
   } = useForm();
 
   const { login, loading } = useAuthStore();
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     try {
       const formattedData = {
         email: data.Email,
         password: data.Password,
       };
-      login(formattedData);
+      await login(formattedData);
       navigate("/home");
     } catch (error) {
       console.error("Login error:", error);

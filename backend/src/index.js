@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 8001;
+const PORT = process.env.PORT || 5001;
 
 // allow json req
 app.use(express.json());
@@ -21,7 +21,12 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://stackcart-certify.vercel.app"],
+    origin: [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "http://localhost:5001",
+      "https://stackcart-certify.vercel.app"
+    ],
     credentials: true,
   })
 );

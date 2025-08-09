@@ -6,6 +6,7 @@ import About from '../Pages/About'
 import CreateId from '../Pages/CreateId'
 import SignIn from '../Pages/SignIn'
 import SignUp from '../Pages/SignUp'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 function AppRoute() {
   return (
@@ -14,7 +15,7 @@ function AppRoute() {
            <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
-            <Route path="createId" element={<CreateId />} />
+            <Route path="createId" element={<ProtectedRoute><CreateId /></ProtectedRoute>} />
             <Route path="about" element={<About />} />
             <Route path="SignIn" element={<SignIn />} />
             <Route path="SignUp" element={<SignUp />} />
