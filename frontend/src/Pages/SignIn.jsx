@@ -109,7 +109,7 @@ function SignIn() {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl p-8 border border-white/20 animate-in fade-in slide-in-from-bottom duration-700 hover:shadow-3xl transition-shadow duration-500">
+        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl p-8 border border-white/20 animate-in fade-in slide-in-from-bottom duration-700 hover:shadow-3xl transition-shadow">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {formFields.map((field, index) => {
               const IconComponent = field.icon;

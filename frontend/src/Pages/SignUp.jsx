@@ -133,7 +133,7 @@ function SignUp() {
         </div>
 
         {/* Signup Form */}
-        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl p-8 border border-white/20 animate-in fade-in slide-in-from-bottom duration-700 hover:shadow-3xl transition-shadow duration-500">
+        <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-3xl p-8 border border-white/20 animate-in fade-in slide-in-from-bottom duration-700 hover:shadow-3xl transition-shadow">
           <div className="space-y-6">
             {formFields.map((field, index) => {
               const IconComponent = field.icon;
