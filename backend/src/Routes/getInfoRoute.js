@@ -3,7 +3,7 @@ import { getInfo } from '../Controllers/getInfoController.js';
 
 const router = express.Router() ; 
 
-router.post('/' , getInfo) ; 
+router.get('/:id' , getInfo) ; 
 
  
 
