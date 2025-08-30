@@ -15,6 +15,7 @@ function AppRoute() {
            <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
+            <Route path="/getInfo/:id" element={<Home />} />
             <Route path="createId" element={<ProtectedRoute><CreateId /></ProtectedRoute>} />
             <Route path="about" element={<About />} />
             <Route path="SignIn" element={<SignIn />} />

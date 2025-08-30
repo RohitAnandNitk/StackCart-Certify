@@ -25,6 +25,7 @@ function CreateId() {
     useCertificateStore();
   const [currentView, setCurrentView] = useState("input");
   const [copySuccess, setCopySuccess] = useState(false);
+  const [copySuccess2, setCopySuccess2] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
   const [focusedField, setFocusedField] = useState("");
   const formRef = useRef();
@@ -72,15 +73,37 @@ function CreateId() {
     await createId(formattedData);
   };
 
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(certificateId);
+  // const copyToClipboard = async (copyText) => {
+  //   try {
+  //     await navigator.clipboard.writeText(copyText);
+  //      if(copyText.startWith("ST")) {
+  //        setCopySuccess(true) ; 
+  //      }
+  //      else setCopySuccess2(true) ;
+      
+  //     setTimeout(() => setCopySuccess(false), 2000);
+  //     setTimeout(() => setCopySuccess2(false), 2000);
+  //   } catch (err) {
+  //     alert("Failed to copy. Please try again.");
+  //   }
+  // };
+  const copyToClipboard = async (copyText) => {
+  try {
+    await navigator.clipboard.writeText(copyText);
+
+    if (copyText.startsWith("ST")) {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
-      alert("Failed to copy. Please try again.");
+    } else {
+      setCopySuccess2(true);
+      setTimeout(() => setCopySuccess2(false), 2000);
     }
-  };
+
+  } catch (err) {
+    alert("Failed to copy. Please try again.");
+  }
+};
+
 
   const formFields = [
     {
@@ -215,7 +238,9 @@ function CreateId() {
                     {certificateId}
                   </span>
                   <button
-                    onClick={copyToClipboard}
+                    onClick={() => {
+                      copyToClipboard(`${certificateId}`);
+                    }}
                     className={`p-3 rounded-xl transition-all duration-300 ${
                       copySuccess
                         ? "bg-green-500 text-white scale-110"
@@ -231,6 +256,40 @@ function CreateId() {
                   </button>
                 </div>
                 {copySuccess && (
+                  <p className="text-green-600 text-sm mt-2 animate-fade-in">
+                    Copied to clipboard! ✨
+                  </p>
+                )}
+              </div>
+
+               {/* Certificate URL display */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 mb-8 border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors duration-300">
+                <p className="text-lg font-semibold text-gray-700 mb-3">
+                  Certificate URL:
+                </p>
+                <div className="flex items-center justify-center gap-4 bg-white rounded-xl p-4 shadow-inner">
+                  <span className="text-2xl font-mono font-bold text-gray-800 select-all">
+                    {`${window.location.host}/getInfo/${certificateId}`}
+                  </span>
+                  <button
+                    onClick={() => {
+                      copyToClipboard(`${window.location.host}/getInfo/${certificateId}`);
+                    }}
+                    className={`p-3 rounded-xl transition-all duration-300 ${
+                      copySuccess2
+                        ? "bg-green-500 text-white scale-110"
+                        : "bg-blue-100 text-blue-600 hover:bg-blue-200 hover:scale-110"
+                    }`}
+                    aria-label="Copy certificate ID"
+                  >
+                    {copySuccess ? (
+                      <CheckCircle size={20} />
+                    ) : (
+                      <Copy size={20} />
+                    )}
+                  </button>
+                </div>
+                {copySuccess2 && (
                   <p className="text-green-600 text-sm mt-2 animate-fade-in">
                     Copied to clipboard! ✨
                   </p>

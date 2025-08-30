@@ -28,10 +28,10 @@ export const useCertificateStore = create((set) => ({
       set({ loading: false });
     }
   },
-  getInfo: async (data) => {
+  getInfo: async ({certificateId}) => {
     set({ loading: true });
     try {
-      const res = await axiosInstance.post("/getInfo", data);
+      const res = await axiosInstance.get(`/getInfo/${certificateId}`);
       set({ certificateInformation: res.data });
     } catch (error) {
       console.error("Error in getCertificateInfo:", error);

@@ -3,7 +3,7 @@ import Employee from "../Models/employee.js";
 
  const getInfo = async (req , res) => {
       try {
-         const {certificateId} = req.body ; 
+         const certificateId = req.params.id ; 
          // trim end spaces 
          const trimId = certificateId.trim() ; 
 
