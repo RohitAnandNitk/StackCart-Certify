@@ -45,8 +45,8 @@ function About() {
     {
       icon: Globe,
       label: "Website",
-      value: "stack-cart-platforms.vercel.app",
-      link: "https://stack-cart-platforms.vercel.app/",
+      value: "https://www.stackcart.info",
+      link: "https://www.stackcart.info",
       color: "blue",
     },
     {
@@ -93,8 +93,8 @@ function About() {
     {
       icon: Mail,
       label: "Support Email",
-      value: "customercare.stackcart@gmail.com",
-      link: "mailto:customercare.stackcart@gmail.com",
+      value: "support@stackcart.in",
+      link: "mailto:support@stackcart.in",
       color: "blue",
     },
     {
@@ -317,14 +317,20 @@ function About() {
               : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer inline-block group">
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-semibold">
-                Ready to start your journey?
-              </span>
-              <ArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+          <a
+            href="https://www.stackcart.space/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 transform cursor-pointer inline-block group">
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-semibold">
+                  Ready to start your journey?
+                </span>
+                <ArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+              </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 
