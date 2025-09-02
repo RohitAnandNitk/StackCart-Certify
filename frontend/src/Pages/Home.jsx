@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Button from "../components/Button";
 import { useCertificateStore } from "../store/useCertificateIdStore";
 import toast from "react-hot-toast";
-import companyLogo from "../assets/company-logo.jpg";
+import companyLogo from "../assets/company-logo.jpg"; // Ensure you have a logo image in the specified path
 import { useParams } from "react-router-dom";
 import {
   Shield,
@@ -50,24 +50,22 @@ function Home() {
       setAnimationState("error");
     }
   }, [certificateInformation, loading, currentView]);
-  
 
   // {Redirect Url logic is here }
 
-   const {id} = useParams() ; 
+  const { id } = useParams();
 
-   useEffect(() => {
-     if(id) {
-      handleRedirect(id) ;   
-     }
-   }, [id] ) ; 
+  useEffect(() => {
+    if (id) {
+      handleRedirect(id);
+    }
+  }, [id]);
 
-   function handleRedirect(id) {
-     setCurrentView("loading");
+  function handleRedirect(id) {
+    setCurrentView("loading");
     setAnimationState("validating");
     getInfo({ certificateId: id });
-   }
-
+  }
 
   const handleValidate = () => {
     if (!inputValue.trim()) {
