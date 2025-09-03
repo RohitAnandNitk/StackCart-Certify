@@ -6,13 +6,13 @@ const protectRoute = async (req, res, next) => {
     const token = req.cookies?.jwt; // requires app.use(cookieParser())
     
     // Debug logging
-    console.log("Auth Middleware Debug:", {
-      cookiesReceived: !!req.cookies,
-      jwtToken: !!token,
-      allCookies: req.cookies,
-      origin: req.headers.origin,
-      userAgent: req.headers['user-agent']
-    });
+    // console.log("Auth Middleware Debug:", {
+    //   cookiesReceived: !!req.cookies,
+    //   jwtToken: !!token,
+    //   allCookies: req.cookies,
+    //   origin: req.headers.origin,
+    //   userAgent: req.headers['user-agent']
+    // });
     
     if (!token) {
       console.log("No JWT token found in cookies");

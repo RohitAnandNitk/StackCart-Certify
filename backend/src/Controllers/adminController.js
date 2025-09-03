@@ -1,6 +1,7 @@
 import Employee from "../Models/employee.js";
 import { nanoid } from "nanoid";
 import { customAlphabet } from 'nanoid';
+import cloudinaryUpload from "../lib/cloudinary.js" ; 
 
 const createId = async (req, res) => {
     const { employeeId, fullName, email, endDate, startDate, issueBy, program } = req.body;
@@ -92,5 +93,54 @@ const createId = async (req, res) => {
 
 }
 
-export { createId };
+const uploadCertificate = async (req , res)=> {
+             if(!req.file) {
+            return res.status(400).json({
+                message : "Please Upload Certificate Image" , 
+            }) ;
+         }
+        try {
+         const certificateId = req.body.certificateId ; 
+         if(!certificateId) {
+            return res.status(400).json({
+                message : "Certificate Id is required"
+            })
+         } ; 
+
+         // upload in cloud
+         const result = await cloudinaryUpload(req.file)  ; 
+
+          if (!result || !result.secure_url || !result.public_id) {
+        return res.status(500).json({ success: false, error: 'Image upload failed.' });
+    }
+         
+         const data = await Employee.findOneAndUpdate(
+            {certificateId : certificateId} , 
+            {$set : {certificateUrl : result.secure_url}} , 
+            {new : true} 
+         ); 
+
+         if(!data) {
+            return res.status(404).json({
+                message : "Employee Not Found"
+            });
+         } ; 
+
+        return res.status(200).json({
+            message : `Certificate Upload Successfully ${data.certificateId}` , 
+        })
+
+        }
+        catch (error) {
+            console.log("Error in upload Certificate controller ", error) ;
+            return res.status(500).json({
+                message : "Internal Server Error" , 
+            })
+        }
+
+
+}; 
+
+
+export { createId , uploadCertificate}; 
 

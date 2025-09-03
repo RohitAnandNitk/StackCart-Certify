@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, UserCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore.js";
+import { useCertificateStore } from "../store/useCertificateIdStore.js";
 import { useNavigate } from "react-router-dom";
+import companyLogo from "../assets/company-logo.jpg"; // Ensure you have a logo image in the specified path
+import { set } from "mongoose";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { admin, loading, logout } = useAuthStore();
+  const {setRemoveCertificate} = useCertificateStore();
   const [isOpen, setIsOpen] = useState(false);
   const [showAdminOption, setShowAdminOption] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
@@ -53,29 +57,32 @@ const Navbar = () => {
       }`}
     >
       <div
-        className={`bg-green-100 shadow-md rounded-2xl px-6 py-3 max-w-7xl mx-auto flex items-center justify-between relative transition-all duration-300 ease-out transform hover:scale-[1.02] hover:shadow-xl ${
+        className={`bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 shadow-md rounded-2xl px-6 py-3 max-w-7xl mx-auto flex items-center justify-between relative transition-all duration-300 ease-out transform hover:scale-[1.02] hover:shadow-xl ${
           isScrolled ? "bg-green-50/95 backdrop-blur-sm shadow-lg" : ""
         }`}
       >
         {/* Logo with hover animation */}
-        <div className="flex-shrink-0 group">
+        <div onClick={()=> {navigate("home")}} className="flex-shrink-0 group">
           <img
-            src="assets/logo.png"
+            // src="assets/logo.png"
+            src={companyLogo}
             alt="LOGO"
-            className="h-14 object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-2"
+            className="h-14 object-contain transition-transform duration-300 group-hover:scale-110 group-hover:rotate-2 sm:h-20 sm:w-20 md:h-14 md:w-14 object-cover rounded-full shadow-xl border-4 border-white animate-in zoom-in "
           />
         </div>
 
         {/* Center Links with stagger animation */}
         <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-gray-700 font-medium">
           {[
-            { to: "/home", label: "Home", show: true },
+            { to: "/home", label: "Home", show: true , onClick: () => setRemoveCertificate(true)},
             { to: "/createId", label: "Create Id", show: admin },
+            { to: "/uploadCertificate", label: "Upload Certificate", show: admin },
             { to: "/about", label: "About Us", show: true },
           ].map(
             (item, index) =>
               item.show && (
                 <li
+                  onClick={item.onClick || undefined}
                   key={item.to}
                   className="relative group"
                   style={{ animationDelay: `${index * 100}ms` }}
@@ -211,6 +218,7 @@ const Navbar = () => {
           {[
             { to: "/home", label: "Home", show: true },
             { to: "/createId", label: "Create Id", show: admin },
+            { to: "/uploadCertificate", label: "Upload Certificate", show: admin },
             { to: "/about", label: "About Us", show: true },
           ].map(
             (item, index) =>
@@ -236,7 +244,7 @@ const Navbar = () => {
           )}
 
           {/* Mobile auth section */}
-          <div className="w-full border-t border-green-100 mt-4 pt-4">
+          <div className="w-full border-t border-green-100">
             {!admin ? (
               <>
                 <li

@@ -39,6 +39,10 @@ const employeeSchema = mongoose.Schema({
         type : String , 
         required : true , 
     } , 
+    certificateUrl : {
+         type : String , 
+         require : false , 
+    } , 
 
 } , {timestamps : true }) ; 
 

@@ -24,6 +24,8 @@ function Home() {
   const {
     getInfo,
     certificateInformation,
+    removeCertificate, 
+    setRemoveCertificate,
     loading,
     setCertificateInformation,
   } = useCertificateStore();
@@ -49,7 +51,14 @@ function Home() {
       setCurrentView("noRecord");
       setAnimationState("error");
     }
-  }, [certificateInformation, loading, currentView]);
+  }, [certificateInformation, loading, currentView ,]);
+
+  // handle home navigate while certificate is showing 
+  useEffect(()=> {
+      if(removeCertificate == true) {
+        handleGoBack() ; 
+      }
+  } , [removeCertificate]) ; 
 
   // {Redirect Url logic is here }
 
@@ -74,6 +83,8 @@ function Home() {
       return;
     }
     setCurrentView("loading");
+    setRemoveCertificate(false);
+
     setAnimationState("validating");
     getInfo({ certificateId: inputValue });
   };
@@ -82,6 +93,7 @@ function Home() {
     setCertificateInformation(null);
     setInputValue("");
     setCurrentView("input");
+    setRemoveCertificate(true);
     setAnimationState("idle");
   };
 
@@ -109,13 +121,13 @@ function Home() {
       label: "Issue Date",
       value: certificateInformation?.issueDate
         ? new Date(certificateInformation.issueDate).toLocaleDateString(
-            "en-US",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            }
-          )
+          "en-US",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }
+        )
         : "",
       color: "purple",
     },
@@ -136,13 +148,13 @@ function Home() {
       label: "Program Start Date",
       value: certificateInformation?.startDate
         ? new Date(certificateInformation.startDate).toLocaleDateString(
-            "en-US",
-            {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            }
-          )
+          "en-US",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }
+        )
         : "",
       color: "teal",
     },
@@ -151,10 +163,10 @@ function Home() {
       label: "Program End Date",
       value: certificateInformation?.endDate
         ? new Date(certificateInformation.endDate).toLocaleDateString("en-US", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
         : "",
       color: "pink",
     },
@@ -224,30 +236,27 @@ function Home() {
                     onKeyPress={handleKeyPress}
                     onFocus={() => setIsInputFocused(true)}
                     onBlur={() => setIsInputFocused(false)}
-                    className={`w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl bg-white/70 backdrop-blur-sm placeholder:text-slate-400 text-slate-700 border-2 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300 ${
-                      isInputFocused
+                    className={`w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl bg-white/70 backdrop-blur-sm placeholder:text-slate-400 text-slate-700 border-2 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300 ${isInputFocused
                         ? "border-blue-500 shadow-xl shadow-blue-100 transform scale-105"
                         : "border-slate-200 hover:border-blue-300 shadow-lg"
-                    }`}
+                      }`}
                     placeholder="Enter your Certificate ID..."
                   />
 
                   {/* Search icon - Made Responsive */}
                   <div
-                    className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${
-                      isInputFocused
+                    className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${isInputFocused
                         ? "text-blue-500 scale-110"
                         : "text-gray-400"
-                    }`}
+                      }`}
                   >
                     <Search size={20} />
                   </div>
 
                   {/* Input glow effect - Made Responsive */}
                   <div
-                    className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-400 to-green-400 opacity-0 blur-xl transition-opacity duration-300 -z-10 ${
-                      isInputFocused ? "opacity-20" : ""
-                    }`}
+                    className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-400 to-green-400 opacity-0 blur-xl transition-opacity duration-300 -z-10 ${isInputFocused ? "opacity-20" : ""
+                      }`}
                   ></div>
                 </div>
 
@@ -343,7 +352,7 @@ function Home() {
       {currentView === "info" && certificateInformation && (
         <div className="flex flex-col gap-6 sm:gap-8 items-center justify-center min-h-screen px-4 py-30 sm:py-8 md:py-12 lg:py-30 w-full max-w-7xl animate-in fade-in slide-in-from-right duration-700">
           {/* Header section - Made Responsive */}
-          <div className="text-center space-y-4 sm:space-y-6 mb-6 sm:mb-8">
+          <div className="text-center space-y-2 sm:space-y-2 mb-2 sm:mb-2">
             <div className="relative inline-block">
               <img
                 src={companyLogo}
@@ -364,17 +373,33 @@ function Home() {
           </div>
 
           {/* Certificate Information Cards - Made Fully Responsive */}
+
+
+          {/* go back button   */}
+              
+              {/* <button className="bg-blue-500 hover:bg-blue-700 rounded-md py-2 px-5 font-serif text-xl" onClick={handleGoBack}>
+                Go back
+              </button> */}
+
+          {/* Certificate Image is Here  */}
+          <div className="flex justify-center mb-6">
+            <img
+              src={`${certificateInformation?.certificateUrl}`}
+              alt="No Certificate Image Found"
+              className="max-w-full h-auto rounded-lg shadow-lg border border-gray-200 object-contain"
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full max-w-6xl">
             {certificateFields.map((field, index) => {
               const IconComponent = field.icon;
               return (
                 <div
                   key={field.label}
-                  className={`bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300 group relative ${
-                    index === 0
+                  className={`bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300 group relative ${index === 0
                       ? "sm:col-span-2 lg:col-span-2 xl:col-span-3"
                       : ""
-                  }`}
+                    }`}
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <div className="flex items-start gap-3 sm:gap-4">

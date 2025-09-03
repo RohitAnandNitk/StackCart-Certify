@@ -7,6 +7,7 @@ import CreateId from '../Pages/CreateId'
 import SignIn from '../Pages/SignIn'
 import SignUp from '../Pages/SignUp'
 import ProtectedRoute from '../components/ProtectedRoute'
+import UploadCertificate from '../Pages/UploadCertificate'
 
 function AppRoute() {
   return (
@@ -17,6 +18,7 @@ function AppRoute() {
             <Route path="home" element={<Home />} />
             <Route path="/getInfo/:id" element={<Home />} />
             <Route path="createId" element={<ProtectedRoute><CreateId /></ProtectedRoute>} />
+            <Route path="uploadCertificate" element={<ProtectedRoute><UploadCertificate /></ProtectedRoute>} />
             <Route path="about" element={<About />} />
             <Route path="SignIn" element={<SignIn />} />
             <Route path="SignUp" element={<SignUp />} />
