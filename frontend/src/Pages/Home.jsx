@@ -18,13 +18,14 @@ import {
   ArrowLeft,
   Award,
   FileText,
+  Download,
 } from "lucide-react";
 
 function Home() {
   const {
     getInfo,
     certificateInformation,
-    removeCertificate, 
+    removeCertificate,
     setRemoveCertificate,
     loading,
     setCertificateInformation,
@@ -51,14 +52,14 @@ function Home() {
       setCurrentView("noRecord");
       setAnimationState("error");
     }
-  }, [certificateInformation, loading, currentView ,]);
+  }, [certificateInformation, loading, currentView]);
 
-  // handle home navigate while certificate is showing 
-  useEffect(()=> {
-      if(removeCertificate == true) {
-        handleGoBack() ; 
-      }
-  } , [removeCertificate]) ; 
+  // handle home navigate while certificate is showing
+  useEffect(() => {
+    if (removeCertificate == true) {
+      handleGoBack();
+    }
+  }, [removeCertificate]);
 
   // {Redirect Url logic is here }
 
@@ -103,13 +104,33 @@ function Home() {
     }
   };
 
-  const certificateFields = [
-    {
-      icon: CreditCard,
-      label: "Certificate ID",
-      value: certificateInformation?.certificateId,
-      color: "blue",
-    },
+  const handleDownloadCertificate = async () => {
+    if (certificateInformation?.certificateUrl) {
+      try {
+        const response = await fetch(certificateInformation.certificateUrl);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `Certificate_${
+          certificateInformation.certificateId || "unknown"
+        }.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        toast.success("Certificate download started!");
+      } catch (error) {
+        toast.error("Failed to download certificate.");
+      }
+    } else {
+      toast.error("Certificate image not available for download.");
+    }
+  };
+
+  const candidateInfoFields = [
     {
       icon: User,
       label: "Name",
@@ -117,19 +138,10 @@ function Home() {
       color: "green",
     },
     {
-      icon: Calendar,
-      label: "Issue Date",
-      value: certificateInformation?.issueDate
-        ? new Date(certificateInformation.issueDate).toLocaleDateString(
-          "en-US",
-          {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }
-        )
-        : "",
-      color: "purple",
+      icon: CreditCard,
+      label: "Certificate ID",
+      value: certificateInformation?.certificateId,
+      color: "blue",
     },
     {
       icon: GraduationCap,
@@ -145,35 +157,46 @@ function Home() {
     },
     {
       icon: Calendar,
-      label: "Program Start Date",
-      value: certificateInformation?.startDate
-        ? new Date(certificateInformation.startDate).toLocaleDateString(
-          "en-US",
-          {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          }
-        )
+      label: "Issue Date",
+      value: certificateInformation?.issueDate
+        ? new Date(certificateInformation.issueDate).toLocaleDateString(
+            "en-US",
+            {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }
+          )
         : "",
-      color: "teal",
+      color: "purple",
     },
     {
       icon: Calendar,
-      label: "Program End Date",
-      value: certificateInformation?.endDate
-        ? new Date(certificateInformation.endDate).toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-        : "",
-      color: "pink",
+      label: "Program Duration",
+      value:
+        certificateInformation?.startDate && certificateInformation?.endDate
+          ? `${new Date(certificateInformation.startDate).toLocaleDateString(
+              "en-US",
+              {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }
+            )} - ${new Date(certificateInformation.endDate).toLocaleDateString(
+              "en-US",
+              {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }
+            )}`
+          : "",
+      color: "teal",
     },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 text-slate-800 font-inter relative overflow-hidden">
+    <div className="m-15 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 text-slate-800 font-inter relative overflow-hidden">
       {/* Enhanced Background Design - Made Responsive */}
       <div className="absolute inset-0 -z-10 h-full w-full">
         {/* Animated grid pattern - Responsive */}
@@ -236,27 +259,30 @@ function Home() {
                     onKeyPress={handleKeyPress}
                     onFocus={() => setIsInputFocused(true)}
                     onBlur={() => setIsInputFocused(false)}
-                    className={`w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl bg-white/70 backdrop-blur-sm placeholder:text-slate-400 text-slate-700 border-2 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300 ${isInputFocused
+                    className={`w-full h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl bg-white/70 backdrop-blur-sm placeholder:text-slate-400 text-slate-700 border-2 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300 ${
+                      isInputFocused
                         ? "border-blue-500 shadow-xl shadow-blue-100 transform scale-105"
                         : "border-slate-200 hover:border-blue-300 shadow-lg"
-                      }`}
+                    }`}
                     placeholder="Enter your Certificate ID..."
                   />
 
                   {/* Search icon - Made Responsive */}
                   <div
-                    className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${isInputFocused
+                    className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-all duration-300 ${
+                      isInputFocused
                         ? "text-blue-500 scale-110"
                         : "text-gray-400"
-                      }`}
+                    }`}
                   >
                     <Search size={20} />
                   </div>
 
                   {/* Input glow effect - Made Responsive */}
                   <div
-                    className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-400 to-green-400 opacity-0 blur-xl transition-opacity duration-300 -z-10 ${isInputFocused ? "opacity-20" : ""
-                      }`}
+                    className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-400 to-green-400 opacity-0 blur-xl transition-opacity duration-300 -z-10 ${
+                      isInputFocused ? "opacity-20" : ""
+                    }`}
                   ></div>
                 </div>
 
@@ -348,103 +374,140 @@ function Home() {
         </div>
       )}
 
-      {/* INFO VIEW - Made Fully Responsive */}
+      {/* INFO VIEW - New Split Layout (3/4 Certificate + 1/4 Info) */}
+      {/* INFO VIEW - Split Layout with Details Below Certificate */}
       {currentView === "info" && certificateInformation && (
-        <div className="flex flex-col gap-6 sm:gap-8 items-center justify-center min-h-screen px-4 py-30 sm:py-8 md:py-12 lg:py-30 w-full max-w-7xl animate-in fade-in slide-in-from-right duration-700">
-          {/* Header section - Made Responsive */}
-          <div className="text-center space-y-2 sm:space-y-2 mb-2 sm:mb-2">
-            <div className="relative inline-block">
-              <img
-                src={companyLogo}
-                alt="Company Logo"
-                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-cover rounded-full shadow-xl border-4 border-white animate-in zoom-in duration-500"
-              />
-              <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-20 blur animate-pulse"></div>
-            </div>
-
-            <div className="space-y-2">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+        <div className="flex flex-col lg:flex-row gap-6 items-start justify-center min-h-screen px-4 py-8 w-full max-w-7xl animate-in fade-in slide-in-from-right duration-700">
+          {/* Left Side - Certificate Image with Details Below (3/4 width on desktop) */}
+          <div className="w-full lg:w-3/4 flex flex-col items-center">
+            {/* Header section for mobile/tablet */}
+            <div className="text-center space-y-3 mb-6 lg:hidden">
+              <div className="relative inline-block">
+                <img
+                  src={companyLogo}
+                  alt="Company Logo"
+                  className="h-16 w-16 sm:h-20 sm:w-20 object-cover rounded-full shadow-xl border-4 border-white animate-in zoom-in duration-500"
+                />
+                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-20 blur animate-pulse"></div>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                 Certificate Verified
               </h2>
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 px-4">
-                Certificate information retrieved successfully
-              </p>
+            </div>
+
+            {/* Certificate Image */}
+            <div className="w-full bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-4 sm:p-6 mb-6">
+              <img
+                src={`${certificateInformation?.certificateUrl}`}
+                alt="Certificate"
+                className="w-full h-auto rounded-lg shadow-lg border border-gray-200 object-contain max-h-[60vh]"
+              />
+            </div>
+
+            {/* Certificate Details in Row Below Certificate */}
+            <div className="w-full">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-4 sm:mb-6">
+                Certificate Details
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-4 lg:gap-6">
+                {candidateInfoFields.map((field, index) => {
+                  const IconComponent = field.icon;
+                  return (
+                    <div
+                      key={field.label}
+                      className="bg-white/90 backdrop-blur-sm rounded-xl p-3 sm:p-4 shadow-lg border border-white/20 hover:shadow-xl hover:scale-105 transition-all duration-300 group"
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div
+                          className={`p-1.5 sm:p-2 bg-${field.color}-100 rounded-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}
+                        >
+                          <IconComponent
+                            className={`text-${field.color}-600`}
+                            size={16}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-gray-800 text-sm sm:text-base mb-1">
+                            {field.label}
+                          </h4>
+                          <p className="text-gray-600 text-xs sm:text-sm break-words leading-relaxed">
+                            {field.value}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Back Button - Mobile/Tablet */}
+            <div className="mt-6 lg:hidden">
+              <button
+                onClick={handleGoBack}
+                className="group bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white text-base sm:text-lg font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center gap-3"
+              >
+                <ArrowLeft
+                  className="group-hover:-translate-x-1 transition-transform duration-300"
+                  size={18}
+                />
+                <span className="hidden sm:inline">
+                  Validate Another Certificate
+                </span>
+                <span className="sm:hidden">Try Again</span>
+              </button>
             </div>
           </div>
 
-          {/* Certificate Information Cards - Made Fully Responsive */}
+          {/* Right Side - Company Logo & Download Button (1/4 width on desktop) */}
+          <div className="w-full lg:w-1/4 flex flex-col gap-6">
+            {/* Header section for desktop */}
+            <div className="text-center space-y-3 hidden lg:block">
+              <div className="relative inline-block">
+                <img
+                  src={companyLogo}
+                  alt="Company Logo"
+                  className="h-20 w-20 object-cover rounded-full shadow-xl border-4 border-white animate-in zoom-in duration-500"
+                />
+                <div className="absolute -inset-2 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-20 blur animate-pulse"></div>
+              </div>
+              <h2 className="text-2xl font-black bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                Verified
+              </h2>
+            </div>
 
+            {/* Download Button */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300">
+              <button
+                onClick={handleDownloadCertificate}
+                className="w-full group bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white text-lg font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3 relative overflow-hidden"
+              >
+                <Download
+                  className="group-hover:animate-bounce transition-transform duration-300"
+                  size={20}
+                />
+                <span>Download Certificate</span>
 
-          {/* go back button   */}
-              
-              {/* <button className="bg-blue-500 hover:bg-blue-700 rounded-md py-2 px-5 font-serif text-xl" onClick={handleGoBack}>
-                Go back
-              </button> */}
+                {/* Button shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              </button>
+            </div>
 
-          {/* Certificate Image is Here  */}
-          <div className="flex justify-center mb-6">
-            <img
-              src={`${certificateInformation?.certificateUrl}`}
-              alt="No Certificate Image Found"
-              className="max-w-full h-auto rounded-lg shadow-lg border border-gray-200 object-contain"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full max-w-6xl">
-            {certificateFields.map((field, index) => {
-              const IconComponent = field.icon;
-              return (
-                <div
-                  key={field.label}
-                  className={`bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300 group relative ${index === 0
-                      ? "sm:col-span-2 lg:col-span-2 xl:col-span-3"
-                      : ""
-                    }`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div
-                      className={`p-2 sm:p-3 bg-${field.color}-100 rounded-lg sm:rounded-xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}
-                    >
-                      <IconComponent
-                        className={`text-${field.color}-600`}
-                        size={20}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-800 mb-1 sm:mb-2 text-base sm:text-lg">
-                        {field.label}
-                      </h3>
-                      <p className="text-gray-600 break-words text-sm sm:text-base leading-relaxed">
-                        {field.value}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Card glow effect - Made Responsive */}
-                  <div
-                    className={`absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-${field.color}-400/10 to-${field.color}-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`}
-                  ></div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Back Button - Made Responsive */}
-          <div className="mt-6 sm:mt-8">
-            <button
-              onClick={handleGoBack}
-              className="group bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white text-base sm:text-lg md:text-xl font-bold py-3 sm:py-4 px-4 sm:px-6 md:px-8 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center gap-2 sm:gap-3"
-            >
-              <ArrowLeft
-                className="group-hover:-translate-x-1 transition-transform duration-300"
-                size={18}
-              />
-              <span className="hidden sm:inline">
-                Validate Another Certificate
-              </span>
-              <span className="sm:hidden">Try Again</span>
-            </button>
+            {/* Back Button - Desktop */}
+            <div className="hidden lg:block">
+              <button
+                onClick={handleGoBack}
+                className="w-full group bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white text-lg font-bold py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3"
+              >
+                <ArrowLeft
+                  className="group-hover:-translate-x-1 transition-transform duration-300"
+                  size={18}
+                />
+                <span>Validate Another</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

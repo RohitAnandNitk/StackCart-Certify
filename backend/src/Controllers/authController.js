@@ -4,6 +4,7 @@ import { generateToken } from "../lib/utils.js";
 
 // SignUp controller
 const signup = async (req, res) => {
+  console.log("Sign-up controller called ........");
   const allowedEmails = [
     "stackcarthiring@gmail.com",
     "anandrohit64748@gmail.com",
@@ -15,6 +16,8 @@ const signup = async (req, res) => {
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
+
+    console.log("email : ", email);
 
     if (password.length < 6) {
       return res

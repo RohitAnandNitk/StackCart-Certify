@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
+
 import {
   Mail,
   Lock,
@@ -21,6 +23,7 @@ function SignUp() {
   const [focusedField, setFocusedField] = useState("");
   const [signupAttempted, setSignupAttempted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { signup } = useAuthStore();
 
   const {
     register,
@@ -45,8 +48,8 @@ function SignUp() {
       setTimeout(() => {
         setLoading(false);
         alert("Sign up successful!");
-        // Replace with your actual signup logic: await signup(formattedData);
-        // navigate("/home");
+        signup(formattedData);
+        navigate("/home");
       }, 2000);
     } catch (error) {
       console.error("Signup error:", error);
