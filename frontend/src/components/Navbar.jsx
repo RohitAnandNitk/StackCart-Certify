@@ -5,12 +5,11 @@ import { useAuthStore } from "../store/useAuthStore.js";
 import { useCertificateStore } from "../store/useCertificateIdStore.js";
 import { useNavigate } from "react-router-dom";
 import companyLogo from "../assets/company-logo.jpg"; // Ensure you have a logo image in the specified path
-import { set } from "mongoose";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { admin, loading, logout } = useAuthStore();
-  const {setRemoveCertificate} = useCertificateStore();
+  const { setRemoveCertificate } = useCertificateStore();
   const [isOpen, setIsOpen] = useState(false);
   const [showAdminOption, setShowAdminOption] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
@@ -62,7 +61,12 @@ const Navbar = () => {
         }`}
       >
         {/* Logo with hover animation */}
-        <div onClick={()=> {navigate("home")}} className="flex-shrink-0 group">
+        <div
+          onClick={() => {
+            navigate("home");
+          }}
+          className="flex-shrink-0 group"
+        >
           <img
             // src="assets/logo.png"
             src={companyLogo}
@@ -74,9 +78,18 @@ const Navbar = () => {
         {/* Center Links with stagger animation */}
         <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-gray-700 font-medium">
           {[
-            { to: "/home", label: "Home", show: true , onClick: () => setRemoveCertificate(true)},
+            {
+              to: "/home",
+              label: "Home",
+              show: true,
+              onClick: () => setRemoveCertificate(true),
+            },
             { to: "/createId", label: "Create Id", show: admin },
-            { to: "/uploadCertificate", label: "Upload Certificate", show: admin },
+            {
+              to: "/uploadCertificate",
+              label: "Upload Certificate",
+              show: admin,
+            },
             { to: "/about", label: "About Us", show: true },
           ].map(
             (item, index) =>
@@ -218,7 +231,11 @@ const Navbar = () => {
           {[
             { to: "/home", label: "Home", show: true },
             { to: "/createId", label: "Create Id", show: admin },
-            { to: "/uploadCertificate", label: "Upload Certificate", show: admin },
+            {
+              to: "/uploadCertificate",
+              label: "Upload Certificate",
+              show: admin,
+            },
             { to: "/about", label: "About Us", show: true },
           ].map(
             (item, index) =>
